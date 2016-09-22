@@ -1,4 +1,4 @@
-package org.wq.mvn4flink.datastream
+package org.wq.mvn4flink.datastream.socket
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
