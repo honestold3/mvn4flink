@@ -79,7 +79,7 @@ object ElasticSearchDemo {
       }
     }
 
-    lazy val essink = new ElasticsearchSink(config, list, indexRequestBuilder) with SinkFunction[String]{
+    val essink = new ElasticsearchSink(config, list, indexRequestBuilder) with SinkFunction[String]{
     }
 
     ds.addSink(essink)

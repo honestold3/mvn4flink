@@ -6,6 +6,7 @@ import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer08, FlinkKafkaProducer08}
+import org.apache.flink.streaming.util.serialization.SimpleStringSchema
 
 
 /**
