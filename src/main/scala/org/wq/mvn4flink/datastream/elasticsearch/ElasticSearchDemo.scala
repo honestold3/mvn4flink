@@ -2,7 +2,7 @@ package org.wq.mvn4flink.datastream.elasticsearch
 
 import java.util
 import java.util.Properties
-import java.net.InetSocketAddress
+import java.net.{InetAddress, InetSocketAddress}
 
 import org.apache.flink.api.common.functions.RuntimeContext
 import org.apache.flink.configuration.Configuration
@@ -63,7 +63,7 @@ object ElasticSearchDemo {
     val map = Map("bulk.flush.max.actions"->"1","cluster.name"->"my-cluster-name")
 
     val transports  = new java.util.ArrayList[InetSocketTransportAddress]()
-    transports.add(new InetSocketTransportAddress("honest", 9300))
+    transports.add(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300))
     val list = transports.asInstanceOf[java.util.List[TransportAddress]]
 
     val indexRequestBuilder = new IndexRequestBuilder[String]{
