@@ -43,7 +43,7 @@ object HBaseNewAPI {
         //准备插入一条 key 为 id001 的数据
         val p = new Put("id001".getBytes)
         //为put操作指定 column 和 value （以前的 put.add 方法被弃用了）
-        p.addColumn("basic".getBytes,"name".getBytes, "wuchong".getBytes)
+        p.addColumn("basic".getBytes,"name".getBytes, "honest".getBytes)
         //提交
         table.put(p)
 
