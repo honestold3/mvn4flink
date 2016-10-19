@@ -25,6 +25,30 @@ import org.apache.flink.util.Collector
 
 /**
   * Created by wq on 16/9/20.
+  *
+  *
+PUT http://honest:9200/flink-test
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  }
+}
+
+PUT /flink-test/_mapping/fink_test_data
+{
+    "properties": {
+        "data": {
+            "type": "string",
+            "index": "not_analyzed"
+        },
+        "log": {
+            "type": "string"
+        }
+    }
+}
   */
 object ElasticSearchDemo {
   private val ZOOKEEPER_HOST = "localhost:2181"

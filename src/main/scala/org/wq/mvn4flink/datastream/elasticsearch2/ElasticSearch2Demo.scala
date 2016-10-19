@@ -17,6 +17,31 @@ import org.apache.flink.streaming.api.scala._
 
 /**
   * Created by wq on 16/9/26.
+  *
+  *
+  *
+PUT http://honest:9200/flink-test2
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  }
+}
+
+PUT /flink-test2/_mapping/fink_test_data2
+{
+    "properties": {
+        "data": {
+            "type": "string",
+            "index": "not_analyzed"
+        },
+        "log": {
+            "type": "string"
+        }
+    }
+}
   */
 object ElasticSearch2Demo {
 
