@@ -1,17 +1,19 @@
 package org.wq.mvn4flink.datastream.window
 
 import java.util.Properties
-import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
+import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+import org.apache.flink.streaming.api.windowing.assigners.ProcessingTimeSessionWindows
 import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer08, FlinkKafkaProducer08}
 import org.wq.mvn4flink.datastream.kafka.KafkaStringSchema
-
+import org.apache.flink.streaming.api.windowing.time.Time
 
 /**
-  * Created by wq on 16/9/26.
+  * Created by wq on 2016/10/21.
   */
-object CountWindow {
+object TimeWindow {
 
   private val ZOOKEEPER_HOST = "localhost:2181"
   private val KAFKA_BROKER = "localhost:9092"
@@ -19,11 +21,6 @@ object CountWindow {
 
   def main(args: Array[String]) {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-
-    val data = env.fromElements(1, 2, 3, 4)
-
-    val kankan = data.countWindowAll(2).sum(0).print()
-
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     // configure Kafka consumer
@@ -38,13 +35,24 @@ object CountWindow {
     val kafkaConsumer = new FlinkKafkaConsumer08[String](
       "input", KafkaStringSchema, kafkaProps)
 
+    val kafkaproducer = new FlinkKafkaProducer08[String](
+      "localhost:9092",
+      "output",
+      KafkaStringSchema
+    )
+
     val dataStream = env.addSource(kafkaConsumer)
 
-    val tumbling = dataStream.keyBy(0).countWindow(100).sum(0)
+    //dataStream.map(_.toString).addSink(kafkaproducer)
 
-    val sliding = dataStream.keyBy(0).countWindow(100,10).sum(0)
+    val tumbling = dataStream.keyBy(0).timeWindow(Time.seconds(30)).sum(0)
+
+    val sliding = dataStream.keyBy(0).timeWindow(Time.seconds(30),Time.seconds(10)).sum(0)
+
+    val session = dataStream.keyBy(0).window(ProcessingTimeSessionWindows.withGap(Time.seconds(30))).sum(1)
 
 
-    env.execute("CountWindow demo")
+    env.execute("Flink Kafka Example")
   }
+
 }
