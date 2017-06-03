@@ -49,24 +49,21 @@ object SocketTextStreamWordCount {
       System.err.println("USAGE:\nSocketTextStreamWordCount <hostname> <port>")
       return
     }
-    
+
     val hostName = args(0)
     val port = args(1).toInt
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
+    env.setParallelism(1)
 
     //Create streams for names and ages by mapping the inputs to the corresponding objects
     val text = env.socketTextStream(hostName, port)
     val counts = text.flatMap { _.toLowerCase.split("\\W+") filter { _.nonEmpty } }
-      .map { (_, 1) }
+      .map{ x =>(x, 1) }
       .keyBy(0)
       .sum(1)
-
-    counts print
-
-
-
-    //env.execute("Scala SocketTextStreamWordCount Example")
+    counts.print
+    env.execute("Scala SocketTextStreamWordCount Example")
   }
 
 }

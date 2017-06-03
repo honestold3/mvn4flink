@@ -1,6 +1,9 @@
 package org.wq.mvn4flink.datastream.state
 
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.connectors.fs.{DateTimeBucketer, RollingSink, SequenceFileWriter}
+import org.apache.hadoop.io
+import org.apache.hadoop.io.{IntWritable, Text}
 
 import scala.collection.immutable.HashSet
 import scala.collection.JavaConversions._
@@ -16,7 +19,7 @@ object StateWorldCount {
     //val env = StreamExecutionEnvironment.getExecutionEnvironment
 
     val env = StreamExecutionEnvironment.createLocalEnvironment()
-    env.setParallelism(1)
+    env.setParallelism(2)
     //env.addDefaultKryoSerializer(classOf[String], classOf[])
 
     val inputStream = env.fromElements("foo", "bar", "foobar", "bar", "barfoo", "foobar", "foo", "fo")
@@ -71,11 +74,15 @@ object StateWorldCount {
     val stream: DataStream[(String,Int)] = env.fromElements(("foo",100),("foo",1),("foo",1),("foo",100))
     val counts: DataStream[(String, Int)] = stream
       .keyBy(_._1)
-      .mapWithState((in: (String, Int), count: Option[Int]) =>
+      .mapWithState{(in: (String, Int), count: Option[Int]) =>
         count match {
           case None => ( (in._1, 1), Some(in._2) )
-          case Some(c) => println(c);( (in._1, c + in._2), Some(c + in._2) )
-        })
+          case Some(c) =>{
+            println(s"kkkkk:::::$c");
+            ( (in._1, c + in._2), Some(c + in._2) )
+          }
+        }
+      }
 
 //    val counts: DataStream[(String, Int)] = stream
 //          .keyBy(_._1)
@@ -86,6 +93,17 @@ object StateWorldCount {
 //              (output,Some(newCount+in._2))
 //            })
 
+    counts.map(x => x._1+","+x._2).writeAsText("hdfs://honest:8020/flinkdata11")
+
+    //val input = counts.map((new Text().set(""),new IntWritable().set(1)))
+
+//    val sink = new RollingSink[String]("hdfs://honest:8020//base/path")
+//    sink.setBucketer(new DateTimeBucketer("yyyy-MM-dd--HHmm"))
+//    //sink.setWriter(new SequenceFileWriter[IntWritable, Text]())
+//    sink.setBatchSize(1024 * 1024 * 400) // this is 400 MB,
+//
+//
+//    counts.map(_._1).addSink(sink)
     counts.print()
 
     env.execute()

@@ -16,16 +16,16 @@ import org.apache.thrift.transport.TTransport;
 public class AccountClient {
     public static void main(String[] args) throws TException {
         TTransport transport = new TSocket("localhost", 9999);
-        transport.open();   //建立连接
+        transport.open();  //建立连接
 
         TProtocol protocol = new TBinaryProtocol(transport);
         Account.Client client = new Account.Client(protocol);
 
-        //第一个请求， 登录 honest 帐号
+        //第一个请求，登录honest
         Request req = new Request("honest", "1234", Operation.LOGIN);
         request(client, req);
 
-        //第二个请求， 注册 honest 帐号
+        //第二个请求，注册honest
         req.setOp(Operation.REGISTER);
         request(client, req);
 
