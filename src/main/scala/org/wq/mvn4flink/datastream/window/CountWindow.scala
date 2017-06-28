@@ -4,7 +4,7 @@ import java.util.Properties
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
-import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer08, FlinkKafkaProducer08}
+import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer010, FlinkKafkaProducer010}
 import org.wq.mvn4flink.datastream.kafka.KafkaStringSchema
 
 
@@ -35,7 +35,7 @@ object CountWindow {
     //      .addSource(new FlinkKafkaConsumer08[String]("input", new SimpleStringSchema(), kafkaProps))
     //      .print
 
-    val kafkaConsumer = new FlinkKafkaConsumer08[String](
+    val kafkaConsumer = new FlinkKafkaConsumer010[String](
       "input", KafkaStringSchema, kafkaProps)
 
     val dataStream = env.addSource(kafkaConsumer)

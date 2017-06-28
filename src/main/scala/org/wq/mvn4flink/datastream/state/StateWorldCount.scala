@@ -11,7 +11,6 @@ import scala.collection.JavaConversions._
   * Created by wq on 2016/10/21.
   */
 
-case class Kankan
 
 object StateWorldCount {
 

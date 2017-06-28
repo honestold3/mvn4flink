@@ -8,7 +8,7 @@ import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.connectors.elasticsearch2.{RequestIndexer, ElasticsearchSinkFunction, ElasticsearchSink}
-import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaProducer08, FlinkKafkaConsumer08}
+import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaProducer010, FlinkKafkaConsumer010}
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.Requests
 import org.elasticsearch.common.transport.{TransportAddress, InetSocketTransportAddress}
@@ -60,10 +60,10 @@ object ElasticSearch2Demo {
     kafkaProps.setProperty("group.id", KAFKA_GROUP)
 
 
-    val kafkaConsumer = new FlinkKafkaConsumer08[String](
+    val kafkaConsumer = new FlinkKafkaConsumer010[String](
       "input2", KafkaStringSchema, kafkaProps)
 
-    val kafkaproducer = new FlinkKafkaProducer08[String](
+    val kafkaproducer = new FlinkKafkaProducer010[String](
       "localhost:9092",
       "output",
       KafkaStringSchema

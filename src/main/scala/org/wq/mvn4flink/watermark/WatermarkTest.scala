@@ -73,7 +73,7 @@ object WatermarkTest {
 
     window.print()
 
-    env.execute()
+    env.execute("SocketWatermark")
   }
 
   class WindowFunctionTest extends WindowFunction[(String,Long),(String, Int,String,String,String,String),String,TimeWindow]{
