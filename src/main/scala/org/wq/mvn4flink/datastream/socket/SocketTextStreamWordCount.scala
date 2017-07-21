@@ -97,8 +97,8 @@ object SocketTextStreamWordCount {
 
 
 
-    env.setStateBackend(new MemoryStateBackend(5 * 1024 * 1024))
-    //env.setStateBackend(new FsStateBackend("hdfs:///flink/checkpoints"))
+    //env.setStateBackend(new MemoryStateBackend(5 * 1024 * 1024))
+    env.setStateBackend(new FsStateBackend("hdfs:///flink/checkpoints"))
     //env.setStateBackend(new RocksDBStateBackend("file:///flink/checkpoints"))
 
     //env.setParallelism(4)
@@ -134,9 +134,10 @@ object SocketTextStreamWordCount {
     //sink.setBucketer(new DateTimeBucketer[String]("yyyy-MM-dd--HHmm"))
     sink.setBucketer(new DateTimeBucketer[String]("yyyy-MM-dd"))
     sink.setWriter(new StringWriter[String]())
-    sink.setBatchSize(1024 *  4)
+    sink.setBatchSize( 1024 * 1024 * 100)
     sink.setPartPrefix("kkk")
-    //sink.setInactiveBucketCheckInterval(2000)
+    sink.setInactiveBucketCheckInterval(2 * 60 * 1000)
+    sink.setInactiveBucketThreshold(2 * 60 * 1000)
     //sink.setPendingPrefix("bbbb")
     //sink.setPendingSuffix("AAAA")
 
@@ -144,7 +145,7 @@ object SocketTextStreamWordCount {
     //mysink.setWriter(new StringWriter[org.apache.flink.api.java.tuple.Tuple2[String,String]]())
     val mysink = new Mysink[(String,String)]("hdfs:///mysink")
     mysink.setWriter(new StringWriter[(String,String)]())
-    mysink.setBatchSize(1024 *  4)
+    mysink.setBatchSize(1024 * 1024 *  100)
 
     val ds = data.map{x =>
       val ss= x.toString.split(",")
@@ -159,7 +160,10 @@ object SocketTextStreamWordCount {
     val format = new HadoopOutputFormat[String, String](multipleTextOutputFormat, jc)
     //ds.writeUsingOutputFormat(format)
 
-    data.map(new Rollop).addSink(sink)
+
+    data.map(_.toString).addSink(sink)
+
+    //data.map(new Rollop).addSink(sink)
 
     //ds.addSink(mysink)
 
